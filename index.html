@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rent it – rent rooms and things near you</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F3F6FB;--surface:#fff;--ink:#10223A;--muted:#5A6A80;--line:#DCE3EE;--brand:#2646E8;--brand-ink:#fff;--sun:#FFB627;--sun-ink:#3a2700;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0C1524;--surface:#15233A;--ink:#EAF0FA;--muted:#9BAAC0;--line:#263855;--brand:#6F8BFF;--brand-ink:#0C1524}}
+:root[data-theme="dark"]{--bg:#0C1524;--surface:#15233A;--ink:#EAF0FA;--muted:#9BAAC0;--line:#263855;--brand:#6F8BFF;--brand-ink:#0C1524}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 Figtree,system-ui,sans-serif}
+h1,h2,h3{font-family:'Bricolage Grotesque',system-ui,sans-serif;line-height:1.1;margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+a{color:inherit}button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.bg::before{content:"";position:absolute;inset:0;background-image:radial-gradient(color-mix(in srgb,var(--ink) 16%,transparent) 1.3px,transparent 1.4px);background-size:24px 24px;-webkit-mask-image:linear-gradient(#000,transparent 80%);mask-image:linear-gradient(#000,transparent 80%)}
+.bg i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;animation:drift 24s ease-in-out infinite alternate}
+.bg i:nth-child(1){width:460px;height:460px;background:#7F95FF;top:-130px;right:-90px}
+.bg i:nth-child(2){width:400px;height:400px;background:#FFC857;top:40%;left:-150px;animation-delay:-8s}
+.bg i:nth-child(3){width:420px;height:420px;background:#FF9EBB;bottom:-150px;right:10%;animation-delay:-15s}
+@keyframes drift{to{translate:70px 50px;scale:1.15}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .bg i{opacity:.28}}
+:root[data-theme="dark"] .bg i{opacity:.28}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;align-items:center;justify-content:space-between;margin:0 -20px;padding:14px 20px;backdrop-filter:blur(12px);background:color-mix(in srgb,var(--bg) 78%,transparent)}
+.logo{font:800 24px 'Bricolage Grotesque',sans-serif;text-decoration:none}
+.logo span{background:var(--sun);color:var(--sun-ink);padding:0 7px;border-radius:8px;margin-right:2px}
+nav{display:flex;gap:18px;align-items:center}
+nav a{text-decoration:none;color:var(--muted);font-weight:500}nav a:hover{color:var(--ink)}
+.btn{border:0;border-radius:12px;padding:11px 18px;font-weight:600;background:var(--brand);color:var(--brand-ink);transition:transform .15s,box-shadow .15s;box-shadow:0 8px 18px -8px var(--brand)}
+.btn:hover{transform:translateY(-2px)}.btn:active,.chip:active{transform:scale(.95)}
+.btn.alt{background:transparent;color:var(--ink);border:1.5px solid var(--line);box-shadow:none}
+.hero{padding:48px 0 36px;display:grid;gap:28px;grid-template-columns:1.2fr .8fr;align-items:center}
+.hero h1{font-size:clamp(42px,7vw,78px);font-weight:800;letter-spacing:-.02em}
+.hero h1 span{display:block;color:var(--brand)}
+.hero p{color:var(--muted);font-size:18px;max-width:46ch;margin:16px 0 22px}
+.search{display:flex;gap:8px;background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:8px;max-width:520px;box-shadow:0 16px 36px -16px rgba(38,70,232,.55);transition:box-shadow .2s,border-color .2s}
+.search:focus-within{border-color:var(--brand);box-shadow:0 0 0 4px rgba(38,70,232,.2)}
+.search input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;padding:8px 10px}.search input:focus{outline:none}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.pills span{font-size:14px;font-weight:600;background:var(--surface);border:1.5px solid var(--line);border-radius:999px;padding:4px 13px}
+.stack{position:relative;height:340px}
+.stack::before{content:"";position:absolute;inset:6% 8%;border-radius:42% 58% 52% 48%;background:linear-gradient(135deg,var(--brand),var(--sun))}
+.tag{position:absolute;background:var(--surface);border:1.5px solid var(--line);border-radius:20px;padding:14px 20px;font-size:17px;font-weight:600;display:flex;gap:10px;align-items:center;box-shadow:0 8px 24px rgba(16,34,58,.12);animation:dlgIn .7s cubic-bezier(.2,.9,.3,1.2) both}
+.tag b{display:grid;place-items:center;width:54px;height:54px;border-radius:15px;font-size:30px;background:var(--bg)}
+.tag small{display:block;color:var(--muted);font-weight:500}
+.tag:nth-child(1){top:2%;left:2%;transform:rotate(-4deg)}
+.tag:nth-child(2){top:38%;right:0;transform:rotate(3deg);animation-delay:.15s}
+.tag:nth-child(3){bottom:2%;left:6%;transform:rotate(-2deg);animation-delay:.3s}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 16px}
+.chip{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 15px;font-weight:500;transition:transform .15s}
+.chip:hover{transform:translateY(-2px)}
+.chip[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.tools{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin:0 0 20px;background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:10px 14px}
+.tools label{display:flex;gap:8px;align-items:center;font-size:14px;font-weight:500}
+.tools input[type=range]{padding:0;accent-color:var(--brand);width:140px}.tools select{padding:7px 10px}
+.sechead{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap}
+.sechead h2{font-size:clamp(26px,4vw,36px)}
+.meta{color:var(--muted);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;padding-bottom:12px}
+.card{position:relative;background:var(--surface);border:1.5px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s;animation:cardIn .45s cubic-bezier(.2,.8,.3,1) backwards;animation-delay:calc(var(--i,0)*50ms)}
+.card:hover{transform:translateY(-6px);box-shadow:0 20px 38px -16px rgba(16,34,58,.4)}
+.thumb{height:150px;display:grid;place-items:center;font-size:70px;position:relative;overflow:hidden}
+.thumb::after{content:"";position:absolute;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.38);right:-50px;top:-60px;transition:scale .5s}
+.card:hover .thumb::after{scale:1.5}
+.cb{padding:14px 16px 16px;display:flex;flex-direction:column;gap:4px;flex:1}
+.cb h3{font-size:18px}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.badge{font-size:12.5px;font-weight:600;background:var(--sun);color:var(--sun-ink);border-radius:999px;padding:2px 10px}
+.ver{font-size:12.5px;font-weight:600;background:#CDEFE0;color:#1E5A44;border-radius:999px;padding:2px 10px}
+.rate{font-weight:600;font-size:14px}
+.price{font:700 20px 'Bricolage Grotesque',sans-serif;margin-top:6px}
+.price small{font:500 14px Figtree,sans-serif;color:var(--muted)}
+.row{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:10px;gap:8px}
+.fav{position:absolute;top:10px;right:10px;z-index:2;width:36px;height:36px;border-radius:50%;border:0;background:var(--surface);font-size:18px;line-height:1;color:var(--muted);box-shadow:0 4px 10px rgba(0,0,0,.15);transition:transform .15s,color .2s}
+.fav:hover{transform:scale(1.12)}.fav[aria-pressed="true"]{color:#E5384F}
+.fav.pop{animation:heart .5s cubic-bezier(.2,.9,.3,1.4)}
+@keyframes heart{0%{scale:1}40%{scale:1.55;rotate:-8deg}100%{scale:1;rotate:0deg}}
+.empty{grid-column:1/-1;padding:36px;text-align:center;color:var(--muted);border:1.5px dashed var(--line);border-radius:18px}
+#wanted{margin-top:48px}
+#wlist{display:grid;gap:10px;margin:14px 0}
+.want{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--surface);border:1.5px dashed var(--brand);border-radius:16px;padding:14px 18px;animation:cardIn .45s backwards}
+.wf{display:grid;grid-template-columns:2fr 1fr 1.4fr auto;gap:10px;align-items:end}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin:48px 0}
+.panel{position:relative;overflow:hidden;border-radius:22px;padding:38px 32px;background:var(--brand);color:var(--brand-ink)}
+.panel::before{content:"";position:absolute;right:-70px;top:-70px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.16)}
+.panel>*{position:relative}
+.panel.sun{background:var(--sun);color:var(--sun-ink)}
+.panel h2{font-size:34px;margin-bottom:10px}.panel p{margin:0 0 18px;opacity:.9}
+.panel .btn{background:var(--brand-ink);color:var(--brand)}.panel.sun .btn{background:var(--sun-ink);color:var(--sun)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:20px 0 48px;padding:0;list-style:none;counter-reset:s}
+.steps li{counter-increment:s;background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:20px;transition:transform .2s}
+.steps li:hover{transform:translateY(-4px)}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--ink);color:var(--bg);font-weight:700;margin-bottom:10px}
+.steps b{display:block;font-size:18px;margin-bottom:4px}.steps span{color:var(--muted)}
+.steps li.rv,.panel.rv{opacity:0;translate:0 28px;transition:opacity .6s,translate .6s,transform .2s}
+.steps li.rv.in,.panel.rv.in{opacity:1;translate:0 0}
+footer{border-top:1.5px solid var(--line);padding:22px 0 30px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+dialog{border:0;border-radius:22px;padding:0;width:min(440px,calc(100% - 28px));background:var(--surface);color:var(--ink)}
+dialog::backdrop{background:rgba(8,14,26,.6)}
+dialog[open]{animation:dlgIn .32s cubic-bezier(.2,.9,.3,1.1)}dialog[open]::backdrop{animation:fade .3s}
+@keyframes dlgIn{from{opacity:0;translate:0 22px;scale:.95}}
+@keyframes fade{from{opacity:0}}
+@keyframes cardIn{from{opacity:0;transform:translateY(22px) scale(.97)}}
+form.pad{padding:24px;display:grid;gap:12px}.dp{padding:22px 24px 24px;display:grid;gap:12px}
+label{display:grid;gap:4px;font-weight:600;font-size:14px}
+input,select{font:inherit;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink)}
+.two-f{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.acts{display:flex;gap:10px;justify-content:flex-end}
+.sum{display:grid;grid-template-columns:1fr auto;gap:6px 12px;background:var(--bg);border-radius:14px;padding:14px}
+.rq{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1.5px solid var(--line)}
+.rq .btn{padding:6px 12px;font-size:14px}.rq .acts{flex-shrink:0}
+#reqList{max-height:50vh;overflow:auto}
+.sum b{display:inline-block;animation:tick .3s ease-out}
+.sum b:last-child,.sum span:nth-last-child(2){font-size:18px;font-weight:700}
+@keyframes tick{from{opacity:.2;translate:0 8px}}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;z-index:30;max-width:90%}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+.bit{position:fixed;z-index:40;pointer-events:none;font-size:20px;animation:bit .85s ease-out forwards}
+@keyframes bit{to{translate:var(--dx) var(--dy);opacity:0;scale:.4}}
+[hidden]{display:none!important}
+@media (max-width:760px){.hero{grid-template-columns:1fr}.stack{height:300px}nav a{display:none}.wf{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="wrap">
+  <header>
+    <a class="logo" href="#"><span>Rent</span>it</a>
+    <nav><a href="#browse">Browse</a><a href="#wanted">Wanted board</a><a href="#how">How it works</a><button class="btn alt" id="reqBtn" hidden>Requests</button><button class="btn alt" id="auth">Log in</button><button class="btn alt" id="theme" aria-label="Switch light or dark mode">🌙</button><button class="btn" data-open>List something</button></nav>
+  </header>
+  <section class="hero">
+    <div>
+      <h1>Need it for now?<span>Rent it.</span></h1>
+      <p>Find a room near your college or office, or borrow the cooler, study table or cycle you don't want to buy. Own something idle? Earn from it.</p>
+      <form class="search" onsubmit="return false"><input id="q" type="search" placeholder="Search rooms, cycle, table, city…" aria-label="Search listings"><button class="btn" type="button" id="go">Search</button></form>
+      <div class="pills"><span>🏠 Rooms</span><span>🛋️ Furniture</span><span>🔌 Appliances</span><span>🚲 Cycles</span><span>💸 Earn from idle things</span></div>
+    </div>
+    <div class="stack" aria-hidden="true">
+      <div class="tag"><b>🏠</b><div>Single room<small>₹6,500 / month</small></div></div>
+      <div class="tag"><b>🚲</b><div>Cycle<small>₹60 / day</small></div></div>
+      <div class="tag"><b>🛋️</b><div>Study table<small>₹400 / month</small></div></div>
+    </div>
+  </section>
+  <section id="browse">
+    <div class="sechead"><h2>Available near you</h2><span class="meta" id="count"></span></div>
+    <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
+    <div class="tools">
+      <label>Max rent / month <input type="range" id="mp" min="0" max="10000" step="100" value="10000"> <output id="mpo">Any</output></label>
+      <label>Sort <select id="sort"><option value="new">Newest</option><option value="low">Price: low to high</option><option value="top">Top rated</option></select></label>
+      <button class="chip" id="verBtn" aria-pressed="false">✔ Verified only</button>
+      <button class="chip" id="savedBtn" aria-pressed="false">♥ Saved (0)</button>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+  <section id="wanted">
+    <div class="sechead"><h2>Wanted board</h2><span class="meta">Can't find it? Post what you need and owners will reach out.</span></div>
+    <div id="wlist"></div>
+    <form class="wf" id="wf">
+      <label>I need<input id="wt" required maxlength="50" placeholder="e.g. Induction cooktop for 2 months"></label>
+      <label>Budget<input id="wb" required maxlength="20" placeholder="₹500 / month"></label>
+      <label>Area<input id="wl" required maxlength="40" placeholder="Dehradun, Rajpur Road"></label>
+      <button class="btn" type="submit">Post request</button>
+    </form>
+  </section>
+  <section class="two">
+    <div class="panel"><h2>Have a room to rent?</h2><p>Landlords reach students and working people looking in your area. Add rent, rules and deposit in a minute.</p><button class="btn" data-open data-type="Room">List your room</button></div>
+    <div class="panel sun"><h2>Idle things earn money</h2><p>Cooler, bed, books, bike, kettle: set a price per day, week or month and rent it out.</p><button class="btn" data-open data-type="Item">List an item</button></div>
+  </section>
+  <section id="how">
+    <h2 style="font-size:clamp(26px,4vw,36px)">How Rent it works</h2>
+    <ol class="steps">
+      <li><b>Search</b><span>Pick rooms or items and filter by what you need.</span></li>
+      <li><b>Contact the owner</b><span>Ask questions and agree on dates and price.</span></li>
+      <li><b>Rent and return</b><span>Use it for as long as you need, then hand it back.</span></li>
+    </ol>
+  </section>
+  <footer><span>Rent it · rent what you need, earn from what you don't</span><span>Made for students and working people</span></footer>
+</div>
+<dialog id="dlg">
+  <form method="dialog" id="addForm" class="pad">
+    <h2 style="font-size:26px">List something for rent</h2>
+    <div class="two-f"><label>Type<select name="type" id="fType"><option>Room</option><option>Item</option></select></label><label>Category<select name="cat" id="fCat"></select></label></div>
+    <label>Title<input name="title" required maxlength="50" placeholder="e.g. Single room near ISBT"></label>
+    <label>Location<input name="loc" required maxlength="40" placeholder="e.g. Dehradun, Rajpur Road"></label>
+    <div class="two-f"><label>Price (₹)<input name="price" type="number" min="1" required></label><label>Per<select name="per"><option>day</option><option>week</option><option selected>month</option></select></label></div>
+    <label>Security deposit (₹, optional)<input name="dep" type="number" min="0" value="0"></label>
+    <label>Photo (optional)<input type="file" id="fPhoto" accept="image/*"><span class="meta" id="photoHint"></span></label>
+    <div class="acts"><button type="button" class="btn alt" id="cancel">Cancel</button><button class="btn" type="submit">Publish listing</button></div>
+  </form>
+</dialog>
+<dialog id="det"><div id="detBody"></div></dialog>
+<dialog id="reqDlg"><div class="dp"><h2 style="font-size:26px">My requests</h2><div class="chips" style="margin:0"><button class="chip" data-rt="received" aria-pressed="true">Received</button><button class="chip" data-rt="sent" aria-pressed="false">Sent</button></div><div id="reqList"></div><div class="acts"><button class="btn alt" id="reqClose">Close</button></div></div></dialog>
+<dialog id="authDlg"><form id="authForm" class="pad"><h2 id="authTitle" style="font-size:26px">Log in</h2><label id="nameRow" hidden>Name<input name="name" maxlength="40"></label><label>Email<input name="email" type="email" required></label><label>Password<input name="password" type="password" minlength="6" required></label><p class="meta" id="authErr" style="margin:0;color:#c0392b"></p><div class="acts"><button type="button" class="btn alt" id="authSwap">Create account</button><button class="btn" type="submit">Continue</button></div></form></dialog>
+<div id="toast" role="status"></div>
+<script>
+var cats=[["All","✨"],["Rooms","🏠"],["Furniture","🛋️"],["Appliances","🔌"],["Books","📚"],["Vehicles","🚲"],["Other","📦"]];
+var tones=["linear-gradient(135deg,#DDE6FF,#B3C4FF)","linear-gradient(135deg,#FFE9B8,#FFCB5E)","linear-gradient(135deg,#D8F3E4,#94DDB8)","linear-gradient(135deg,#FFD9DE,#FFA3B0)","linear-gradient(135deg,#E6DDFB,#BFA8F5)"];
+var data=[
+{t:"Single room with attached bath",c:"Rooms",e:"🏠",l:"Dehradun, Rajpur Road",p:6500,u:"month",n:"Mr. Rawat",r:4.8,v:1,dep:6500,d:"Furnished room, 24x7 water, 10 minutes from the bus stop. Kitchen access included."},
+{t:"Shared flat, 1 bed free",c:"Rooms",e:"🏢",l:"Dehradun, Ballupur",p:4200,u:"month",n:"Mrs. Negi",r:4.5,v:1,dep:4200,d:"Two working professionals already live here. Wi-Fi and housekeeping included."},
+{t:"Study table and chair",c:"Furniture",e:"🪑",l:"Dehradun, Clement Town",p:400,u:"month",n:"Aman",r:4.7,v:1,dep:300,d:"Sturdy wooden table with a cushioned chair. Free pickup within 3 km."},
+{t:"Room cooler",c:"Appliances",e:"❄️",l:"Dehradun, Premnagar",p:900,u:"month",n:"Neha",r:4.4,v:0,dep:1000,d:"Large-tank cooler. Tank is cleaned before every rental."},
+{t:"Gear cycle",c:"Vehicles",e:"🚲",l:"Dehradun, Dalanwala",p:60,u:"day",n:"Rohit",r:4.9,v:1,dep:500,d:"21-gear cycle with lock and helmet. Good for college commutes."},
+{t:"Engineering books set",c:"Books",e:"📚",l:"Dehradun, Patel Nagar",p:250,u:"month",n:"Priya",r:4.6,v:0,dep:200,d:"Semester 3 and 4 core books, clean copies with no torn pages."},
+{t:"Single bed with mattress",c:"Furniture",e:"🛏️",l:"Dehradun, Ajabpur",p:700,u:"month",n:"Karan",r:4.3,v:0,dep:500,d:"Steel-frame single bed with a new mattress. Delivery can be arranged."},
+{t:"Induction cooktop",c:"Appliances",e:"🍳",l:"Dehradun, Araghar",p:150,u:"week",n:"Sunita",r:4.8,v:1,dep:300,d:"Touch-control induction, comes with one steel pan."}
+];
+data.forEach(function(d,i){d.id=i});
+var wanted=[{t:"Looking for a room cooler",b:"₹800 / month",l:"Dehradun, Premnagar",w:"Student"},{t:"Need a single room near IT Park",b:"₹5,000 / month",l:"Dehradun, Sahastradhara Road",w:"Working professional"},{t:"Want a cycle for 2 weeks",b:"₹50 / day",l:"Dehradun, Dalanwala",w:"Student"}];
+var API="/api",token=null,user=null,offline=false,authMode="login";
+try{token=localStorage.getItem("ri_token");user=JSON.parse(localStorage.getItem("ri_user")||"null")}catch(e){}
+function api(path,opt){opt=opt||{};var h={"Content-Type":"application/json"};if(token)h.Authorization="Bearer "+token;return fetch(API+path,{method:opt.method||"GET",headers:h,body:opt.body?JSON.stringify(opt.body):undefined}).then(function(r){return r.json().catch(function(){return {}}).then(function(j){if(!r.ok)throw new Error(j.error||"Something went wrong");return j})})}
+function mapL(x){return {id:x.id,t:x.title,c:x.category,e:x.emoji,l:x.location,p:x.price,u:x.unit,n:x.owner,r:x.rating,v:x.verified,dep:x.deposit,d:x.description,photo:x.photo}}
+var cur="All",saved={},onlySaved=false,onlyVer=false,sel=null,$=function(i){return document.getElementById(i)};
+var fmt=function(n){return Number(n).toLocaleString("en-IN")};
+var mo=function(d){return d.p*(d.u==="day"?30:d.u==="week"?4:1)};
+function toast(m){var t=$("toast");t.textContent=m;t.className="on";clearTimeout(toast.h);toast.h=setTimeout(function(){t.className=""},2400)}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function chips(){$("chips").innerHTML=cats.map(function(c){return '<button class="chip" aria-pressed="'+(c[0]===cur)+'" data-c="'+c[0]+'">'+c[1]+" "+c[0]+"</button>"}).join("")}
+function thumbH(d,i){return '<div class="thumb" style="background:'+(d.photo?'url('+d.photo+') center/cover':tones[i%tones.length])+'" aria-hidden="true">'+(d.photo?'':d.e)+'</div>'}
+function render(){
+  var q=$("q").value.trim().toLowerCase(),mx=+$("mp").value;
+  $("mpo").textContent=mx>=10000?"Any":"₹"+fmt(mx);
+  $("savedBtn").textContent="♥ Saved ("+Object.keys(saved).filter(function(k){return saved[k]}).length+")";
+  var list=data.filter(function(d){return (cur==="All"||d.c===cur)&&(!q||(d.t+" "+d.l+" "+d.c).toLowerCase().indexOf(q)>-1)&&(mx>=10000||mo(d)<=mx)&&(!onlySaved||saved[d.id])&&(!onlyVer||d.v)});
+  var s=$("sort").value;
+  if(s==="low")list.sort(function(a,b){return mo(a)-mo(b)});
+  if(s==="top")list.sort(function(a,b){return (b.r||0)-(a.r||0)});
+  $("count").textContent=list.length+" listing"+(list.length===1?"":"s");
+  $("grid").innerHTML=list.length?list.map(function(d,i){
+    return '<article class="card" style="--i:'+Math.min(i,9)+'"><button class="fav" data-id="'+d.id+'" aria-pressed="'+!!saved[d.id]+'" aria-label="Save listing">♥</button>'+thumbH(d,i)+'<div class="cb"><div class="badges"><span class="badge">'+d.c+'</span>'+(d.v?'<span class="ver">✔ Verified</span>':'')+'</div><h3>'+esc(d.t)+'</h3><span class="meta">'+esc(d.l)+'</span><span class="rate">'+(d.r?'★ '+d.r:'New')+' <span class="meta">· '+esc(d.n)+'</span></span><div class="price">₹'+fmt(d.p)+' <small>/ '+d.u+'</small></div><div class="row"><button class="btn" data-view="'+d.id+'">View &amp; rent</button></div></div></article>';
+  }).join(""):'<div class="empty">No listings match yet. Try another filter, or post it on the Wanted board below.</div>';
+}
+function wr(){$("wlist").innerHTML=wanted.map(function(w){return '<div class="want"><div><b>'+esc(w.t)+'</b><div class="meta">'+esc(w.l)+' · budget '+esc(w.b)+' · '+esc(w.w)+'</div></div><button class="btn alt" data-have="1">I have this</button></div>'}).join("")}
+function sum(){var n=Math.max(1,+$("dn").value||1),r=sel.p*n,dp=+sel.dep||0;$("sum").innerHTML='<span>Rent for '+n+' '+sel.u+(n>1?"s":"")+'</span><b>₹'+fmt(r)+'</b><span>Deposit (paid to owner in person)</span><b>₹'+fmt(dp)+'</b><span>Total to pay</span><b>₹'+fmt(r+dp)+'</b>'}
+function openDet(id){
+  sel=data.filter(function(x){return x.id==id})[0];var d=sel;
+  $("detBody").innerHTML=''+thumbH(d,d.id)+'<div class="dp"><div class="badges"><span class="badge">'+d.c+'</span>'+(d.v?'<span class="ver">✔ ID verified</span>':'')+'</div><h2 style="font-size:26px">'+esc(d.t)+'</h2><span class="meta">'+esc(d.l)+' · '+esc(d.n)+' · '+(d.r?'★ '+d.r:'New listing')+'</span><p style="margin:0">'+esc(d.d||"Listed by you.")+'</p><label>How many '+d.u+'s do you need?<input id="dn" type="number" min="1" value="1"></label><div class="sum" id="sum"></div><div class="acts"><button class="btn alt" id="dc">Close</button><button class="btn" id="dr">Send rent request</button></div></div>';
+  sum();$("det").showModal();
+}
+function fillCats(){var rooms=$("fType").value==="Room";$("fCat").innerHTML=(rooms?["Rooms"]:cats.slice(2).map(function(c){return c[0]})).map(function(n){return"<option>"+n+"</option>"}).join("")}
+function burst(x,y){if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;var em=["🎉","✨","💙","⭐"];for(var i=0;i<14;i++){var b=document.createElement("span"),a=Math.PI*2*i/14,r=60+Math.random()*60;b.className="bit";b.textContent=em[i%4];b.style.cssText="left:"+x+"px;top:"+y+"px;--dx:"+Math.cos(a)*r+"px;--dy:"+Math.sin(a)*r+"px";document.body.appendChild(b);setTimeout(function(n){n.remove()},900,b)}}
+document.addEventListener("click",function(e){
+  var t=e.target,c=t.closest("[data-c]");if(c){cur=c.dataset.c;chips();render()}
+  var f=t.closest(".fav");if(f)toggleSave(f.dataset.id);
+  var v=t.closest("[data-view]");if(v)openDet(v.dataset.view);
+  if(t.closest("#dc"))$("det").close();
+  if(t.closest("#dr"))sendRequest(t.closest("#dr"));
+  if(t.closest("[data-have]"))toast("Great! We told the requester about your offer.");
+  var o=t.closest("[data-open]");if(o){if(o.dataset.type){$("fType").value=o.dataset.type;fillCats()}$("dlg").showModal()}
+});
+document.addEventListener("input",function(e){if(e.target.id==="dn")sum()});
+$("fType").addEventListener("change",fillCats);
+$("cancel").onclick=function(){$("dlg").close()};
+$("go").onclick=function(){render();$("browse").scrollIntoView()};
+$("q").addEventListener("input",render);$("mp").addEventListener("input",render);$("sort").addEventListener("change",render);
+$("verBtn").onclick=function(){onlyVer=!onlyVer;this.setAttribute("aria-pressed",onlyVer);render()};
+$("savedBtn").onclick=function(){onlySaved=!onlySaved;this.setAttribute("aria-pressed",onlySaved);render()};
+$("theme").onclick=function(){var r=document.documentElement,dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;r.dataset.theme=dark?"light":"dark";this.textContent=dark?"🌙":"☀️";this.animate([{rotate:"0deg"},{rotate:"360deg"}],{duration:450,easing:"ease-out"})};
+$("wf").addEventListener("submit",function(e){e.preventDefault();var f=this,item={t:$("wt").value,b:$("wb").value,l:$("wl").value,w:user?user.name:"You"};if(offline){wanted.unshift(item);wr();f.reset();return toast("Request posted on the Wanted board")}if(!token)return askLogin("Log in to post a request");api("/wanted",{method:"POST",body:{title:item.t,budget:item.b,area:item.l}}).then(function(){wanted.unshift(item);wr();f.reset();toast("Request posted on the Wanted board")}).catch(function(x){toast(x.message)})});
+var photoData="",reqTab="received";
+$("fPhoto").addEventListener("change",function(){var file=this.files[0];photoData="";$("photoHint").textContent="";if(!file)return;var rd=new FileReader();rd.onload=function(){var im=new Image();im.onload=function(){var k=Math.min(1,640/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*k;c.height=im.height*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);photoData=c.toDataURL("image/jpeg",.8);$("photoHint").textContent="Photo ready"};im.onerror=function(){$("photoHint").textContent="Could not read that image"};im.src=rd.result};rd.readAsDataURL(file)});
+function loadReq(){api("/requests").then(function(r){var L=r[reqTab];$("reqList").innerHTML=L.length?L.map(function(x){var who=reqTab==="received"?esc(x.renter)+" wants":"You asked for",st='<span class="'+(x.status==="accepted"?"ver":"badge")+'">'+x.status+'</span>',act=reqTab==="received"&&x.status==="pending"?'<button class="btn" data-rs="accepted" data-rid="'+x.id+'">Accept</button><button class="btn alt" data-rs="declined" data-rid="'+x.id+'">Decline</button>':(x.status==="accepted"&&x.payment_status==="paid"?'<span class="ver">Paid ₹'+fmt(x.amount)+'</span>':(reqTab==="sent"&&x.status==="accepted"?'<button class="btn" data-pay="'+x.id+'">Pay ₹'+fmt(x.amount)+'</button>':st));return '<div class="rq"><div><b>'+esc(x.title)+'</b><div class="meta">'+who+' '+x.quantity+' '+x.unit+(x.quantity>1?"s":"")+(reqTab==="sent"?" · "+esc(x.owner_name):"")+(reqTab==="sent"&&x.status==="accepted"&&x.payment_status!=="paid"&&x.deposit?" · deposit ₹"+fmt(x.deposit)+" goes to the owner in person":"")+'</div></div><div class="acts">'+act+'</div></div>'}).join(""):'<p class="meta">Nothing here yet.</p>'}).catch(function(e){toast(e.message)})}
+function loadRzp(cb){if(window.Razorpay)return cb();var s=document.createElement("script");s.src="https://checkout.razorpay.com/v1/checkout.js";s.onload=cb;s.onerror=function(){toast("Could not load the payment window")};document.body.appendChild(s)}
+function payNow(rid){api("/requests/"+rid+"/pay",{method:"POST"}).then(function(o){loadRzp(function(){$("reqDlg").close();var rz=new Razorpay({key:o.keyId,amount:o.amount,currency:o.currency,order_id:o.orderId,name:"Rent it",description:o.title,prefill:{name:user.name},theme:{color:"#2646E8"},handler:function(r){api("/payments/verify",{method:"POST",body:r}).then(function(){toast("Payment received. Thank you!")}).catch(function(e){toast(e.message)})}});rz.on("payment.failed",function(){toast("Payment failed. You can try again from Requests.")});rz.open()})}).catch(function(e){toast(e.message)})}
+function reqTabs(){document.querySelectorAll("[data-rt]").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.rt===reqTab)})}
+$("reqBtn").onclick=function(){if(offline)return toast("Start the backend to see requests");reqTab="received";reqTabs();$("reqDlg").showModal();loadReq()};
+$("reqClose").onclick=function(){$("reqDlg").close()};
+document.addEventListener("click",function(e){var t=e.target.closest("[data-rt]");if(t){reqTab=t.dataset.rt;reqTabs();loadReq()}var pp=e.target.closest("[data-pay]");if(pp)payNow(pp.dataset.pay);var s=e.target.closest("[data-rs]");if(s)api("/requests/"+s.dataset.rid,{method:"PATCH",body:{status:s.dataset.rs}}).then(function(){toast("Request "+s.dataset.rs);loadReq()}).catch(function(x){toast(x.message)})});
+function toggleSave(id){if(!offline&&!token)return askLogin("Log in to save listings");var on=!saved[id];saved[id]=on;toast(on?"Saved to your list":"Removed from your list");render();var nf=document.querySelector('.fav[data-id="'+id+'"]');if(nf&&on)nf.classList.add("pop");if(!offline)api("/listings/"+id+"/save",{method:on?"POST":"DELETE"}).catch(function(){})}
+function sendRequest(btn){if(!offline&&!token){$("det").close();return askLogin("Log in to send a rent request")}var n=Math.max(1,+$("dn").value||1),done=function(){var rc=btn.getBoundingClientRect();burst(rc.left+rc.width/2,rc.top);$("det").close();toast("Request sent to "+sel.n+". Once they accept, you can pay from Requests.")};if(offline)return done();api("/listings/"+sel.id+"/request",{method:"POST",body:{quantity:n}}).then(done).catch(function(e){toast(e.message)})}
+$("addForm").addEventListener("submit",function(e){
+  var f=new FormData($("addForm")),cat=f.get("cat"),ic=cats.filter(function(c){return c[0]===cat})[0],em=ic?ic[1]:"📦";
+  var local={id:Date.now(),t:f.get("title"),c:cat,e:em,l:f.get("loc"),p:+f.get("price"),u:f.get("per"),n:user?user.name:"You",r:null,v:0,dep:+f.get("dep")||0,photo:photoData};
+  var fin=function(item){data.unshift(item);cur="All";$("q").value="";chips();render();$("addForm").reset();fillCats();photoData="";$("photoHint").textContent="";toast("Your listing is live");burst(innerWidth/2,innerHeight/2)};
+  if(offline)return fin(local);
+  e.preventDefault();if(!token){$("dlg").close();return askLogin("Log in to list something")}
+  api("/listings",{method:"POST",body:{title:local.t,category:cat,emoji:em,location:local.l,price:local.p,unit:local.u,deposit:local.dep,photo:photoData}}).then(function(r){$("dlg").close();fin(mapL(r))}).catch(function(err){toast(err.message)});
+});
+function setAuth(){$("auth").textContent=user?"Hi, "+user.name.split(" ")[0]+" · Log out":"Log in";$("reqBtn").hidden=!user}
+function openAuth(m){authMode=m;$("authTitle").textContent=m==="login"?"Log in":"Create account";$("nameRow").hidden=m==="login";$("authSwap").textContent=m==="login"?"Create account":"I have an account";$("authErr").textContent="";$("authDlg").showModal()}
+function askLogin(msg){toast(msg);openAuth("login")}
+$("auth").onclick=function(){if(user){token=null;user=null;saved={};try{localStorage.removeItem("ri_token");localStorage.removeItem("ri_user")}catch(e){}setAuth();render();toast("Logged out")}else openAuth("login")};
+$("authSwap").onclick=function(){openAuth(authMode==="login"?"register":"login")};
+$("authForm").addEventListener("submit",function(e){e.preventDefault();var f=new FormData(this);if(offline){$("authErr").textContent="Server not connected. Start the backend to log in.";return}
+  api("/auth/"+authMode,{method:"POST",body:{name:f.get("name"),email:f.get("email"),password:f.get("password")}}).then(function(r){token=r.token;user=r.user;try{localStorage.setItem("ri_token",token);localStorage.setItem("ri_user",JSON.stringify(user))}catch(x){}$("authDlg").close();setAuth();toast("Welcome, "+user.name);return api("/saved").then(function(ids){ids.forEach(function(i){saved[i]=true});render()})}).catch(function(err){$("authErr").textContent=err.message})});
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);setTimeout(function(n){n.style.transitionDelay=""},1100,e.target)}})},{threshold:.15});
+document.querySelectorAll(".steps li,.panel").forEach(function(el,i){el.classList.add("rv");el.style.transitionDelay=(i%3)*90+"ms";io.observe(el)});
+api("/listings").then(function(r){data=r.map(mapL);render()}).catch(function(){offline=true;toast("Demo mode: backend not connected")});
+api("/wanted").then(function(r){wanted=r.map(function(w){return{t:w.title,b:w.budget,l:w.area,w:w.owner}});wr()}).catch(function(){});
+if(token)api("/saved").then(function(ids){ids.forEach(function(i){saved[i]=true});render()}).catch(function(){});
+setAuth();chips();fillCats();render();wr();
+</script>
+</body>
+</html>
